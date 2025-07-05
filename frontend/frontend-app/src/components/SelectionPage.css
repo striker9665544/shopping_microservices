@@ -1,0 +1,38 @@
+/* src/components/SelectionPage.css */
+
+.selection-container {
+    display: flex;
+    flex-direction: row; /* Arrange items in a row */
+    justify-content: space-around; /* Distribute space around items */
+    align-items: flex-start; /* Align items to the top */
+    padding: 20px;
+    gap: 20px; /* Adds space between the flex items */
+}
+
+.selection-item {
+    flex: 1; /* Allows each item to grow and shrink equally */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.selection-item h3 {
+    margin-top: 0;
+}
+
+.selection-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.selection-item button:hover {
+    background-color: #0056b3;
+}

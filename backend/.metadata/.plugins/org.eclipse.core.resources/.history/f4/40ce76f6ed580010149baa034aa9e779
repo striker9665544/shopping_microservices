@@ -1,0 +1,13 @@
+package com.cart.demo.dto;
+
+//src/main/java/com/cart/demo/dto/AddItemRequest.java
+
+import lombok.Data;
+
+@Data
+public class AddItemRequest {
+ private Long productId;
+ private String productName;
+ private double price;
+ private int quantity;
+}

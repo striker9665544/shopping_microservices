@@ -1,0 +1,69 @@
+package com.shoes.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.shoes.demo.dto.ProductResponseDTO;
+import com.shoes.demo.Entity.Shoes;
+import com.shoes.demo.Repository.ShoesRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/shoes") // Defines the base URL for all methods in this controller
+public class ShoesController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private ShoesRepository shoesRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Shoes> getAllShoes(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return shoesRepository.findByBrand(brand);
+        }
+        return shoesRepository.findAll();
+    }
+    
+    // THIS IS THE NEW TEMPORARY DEBUGGING ENDPOINT
+    @GetMapping("/debug")
+    public String debugDatabaseContent() {
+        System.out.println("\n\n--- RUNNING DATABASE CONTENT DEBUG ---");
+        List<Shoes> allShoes = shoesRepository.findAll();
+        System.out.println("Found " + allShoes.size() + " total mobiles in the database.");
+        for (Shoes Shoes : allShoes) {
+            System.out.println("ID: " + Shoes.getId() + 
+                               ", Name: '" + Shoes.getName() + "'" +
+                               ", Brand: '" + Shoes.getBrand() + "'");
+        }
+        System.out.println("--- FINISHED DATABASE CONTENT DEBUG ---\n\n");
+        return "Debug complete. Check the console log for the mobile-service.";
+    }
+
+    @GetMapping("/search")
+    public List<ProductResponseDTO> searchMobiles(@RequestParam(value = "q", defaultValue = "") String query) {
+        System.out.println("--- MOBILE-SERVICE: Received /search request with query: '" + query + "' ---");
+        
+        List<Shoes> Shoes;
+        if (query.isEmpty()) {
+        	Shoes = shoesRepository.findAll();
+        } else {
+        	Shoes = shoesRepository.searchByName(query);
+        }
+        
+        System.out.println("MOBILE-SERVICE: Found " + Shoes.size() + " products in database for query '" + query + "'.");
+        return Shoes.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+    
+    private ProductResponseDTO convertToDto(Shoes shoes) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(shoes.getId());
+        dto.setName(shoes.getName());
+        dto.setPrice(shoes.getPrice());
+        dto.setBrand(shoes.getBrand());
+        return dto;
+    }
+    
+}

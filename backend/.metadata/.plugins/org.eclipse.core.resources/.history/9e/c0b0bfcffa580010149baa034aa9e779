@@ -1,0 +1,33 @@
+package com.shoes.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.shoes.demo.Entity.Shoes;
+import com.shoes.demo.Repository.ShoesRepository;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/shoes") // Defines the base URL for all methods in this controller
+public class ShoesController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private ShoesRepository shoesRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Shoes> getAllShoes(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return shoesRepository.findByBrand(brand);
+        }
+        return shoesRepository.findAll();
+    }
+    
+    @GetMapping("/search")
+    public List<Shoes> searchMobiles(@RequestParam String q) {
+        return shoesRepository.findByNameContainingIgnoreCase(q);
+    }
+    
+}

@@ -1,0 +1,12 @@
+package com.mobile.demo.Repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.mobile.demo.Entity.Mobile;
+
+
+//In MobileRepository.java
+public interface MobileRepository extends JpaRepository<Mobile, Long> {
+ List<Mobile> findByBrand(String brand); // JPA creates the query for you!
+}

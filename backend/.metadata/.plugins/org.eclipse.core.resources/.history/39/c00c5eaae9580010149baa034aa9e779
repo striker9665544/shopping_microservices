@@ -1,0 +1,5 @@
+package com.search.demo.config;
+
+public class WebClientConfig {
+
+}

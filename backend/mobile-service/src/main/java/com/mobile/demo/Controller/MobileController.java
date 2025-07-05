@@ -1,0 +1,72 @@
+// src/main/java/com/mobile/demo/Controller/MobileController.java
+package com.mobile.demo.Controller;
+
+import com.mobile.demo.Entity.Mobile;
+import com.mobile.demo.Repository.MobileRepository;
+import com.mobile.demo.dto.ProductResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/mobile")
+@CrossOrigin(origins = "http://localhost:3000")
+public class MobileController {
+    
+    @Autowired
+    private MobileRepository mobileRepository;
+
+    private ProductResponseDTO convertToDto(Mobile mobile) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(mobile.getId());
+        dto.setName(mobile.getName());
+        dto.setPrice(mobile.getPrice());
+        dto.setBrand(mobile.getBrand());
+        return dto;
+    }
+
+    // THIS IS THE NEW TEMPORARY DEBUGGING ENDPOINT
+    @GetMapping("/debug")
+    public String debugDatabaseContent() {
+        System.out.println("\n\n--- RUNNING DATABASE CONTENT DEBUG ---");
+        List<Mobile> allMobiles = mobileRepository.findAll();
+        System.out.println("Found " + allMobiles.size() + " total mobiles in the database.");
+        for (Mobile mobile : allMobiles) {
+            System.out.println("ID: " + mobile.getId() + 
+                               ", Name: '" + mobile.getName() + "'" +
+                               ", Brand: '" + mobile.getBrand() + "'");
+        }
+        System.out.println("--- FINISHED DATABASE CONTENT DEBUG ---\n\n");
+        return "Debug complete. Check the console log for the mobile-service.";
+    }
+
+    @GetMapping("/search")
+    public List<ProductResponseDTO> searchMobiles(@RequestParam(value = "q", defaultValue = "") String query) {
+        System.out.println("--- MOBILE-SERVICE: Received /search request with query: '" + query + "' ---");
+        
+        List<Mobile> mobiles;
+        if (query.isEmpty()) {
+            mobiles = mobileRepository.findAll();
+        } else {
+            mobiles = mobileRepository.searchByNameOrBrand(query);
+        }
+        
+        System.out.println("MOBILE-SERVICE: Found " + mobiles.size() + " products in database for query '" + query + "'.");
+        return mobiles.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    // Other methods like getAllMobile by brand can remain
+    @GetMapping
+    public List<ProductResponseDTO> getAllMobile(@RequestParam(required = false) String brand) {
+        List<Mobile> mobiles;
+        if (brand != null && !brand.isEmpty()) {
+            mobiles = mobileRepository.findByBrand(brand);
+        } else {
+            mobiles = mobileRepository.findAll();
+        }
+        // Convert the list of entities to a list of DTOs
+        return null; 
+    }
+}

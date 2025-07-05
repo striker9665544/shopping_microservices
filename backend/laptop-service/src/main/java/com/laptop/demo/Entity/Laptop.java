@@ -1,0 +1,54 @@
+// src/main/java/com/laptop/demo/Entity/Laptop.java
+package com.laptop.demo.Entity;
+
+import java.math.BigDecimal;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
+
+@Entity
+@Data
+public class Laptop {
+	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+    
+    private BigDecimal price;
+    
+    private String brand;
+    
+    // No-argument constructor
+    public Laptop() {
+    }
+
+    public Laptop(Long id, String name, BigDecimal price, String brand) { // <-- Add 'brand' here
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.brand = brand; // <-- And assign it here
+    }
+
+    // Getters and setters
+
+    public Long getId() {    return id;   }
+
+    public void setId(Long id) {   this.id = id;    }
+
+    public String getName() {  return name;  }
+
+    public void setName(String name) { this.name = name; }
+
+    public BigDecimal getPrice() { return price; }
+
+    public void setPrice(BigDecimal price) { this.price = price; }
+    
+    public String getBrand() { return brand; }
+    
+    public void setBrand(String brand) { this.brand = brand; }
+}

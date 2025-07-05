@@ -1,0 +1,107 @@
+package com.cart.demo.controller;
+
+//src/main/java/com/cart/demo/controller/CartController.java
+
+import com.cart.demo.dto.*;
+import com.cart.demo.entity.*;
+import com.cart.demo.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/cart")
+public class CartController {
+
+	 @Autowired
+	 private CartRepository cartRepository;
+	
+	 // GET a user's cart
+	 @GetMapping("/{userId}")
+	 public ResponseEntity<Cart> getCart(@PathVariable String userId) {
+	     Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
+	         Cart newCart = new Cart();
+	         newCart.setUserId(userId);
+	         return cartRepository.save(newCart);
+	     });
+	     return ResponseEntity.ok(cart);
+	 }
+	
+	 // POST to add an item to a cart
+	 @PostMapping("/{userId}/items")
+	 @Transactional
+	 public ResponseEntity<Cart> addItemToCart(@PathVariable String userId, @RequestBody AddItemRequest addItemRequest) {
+	     Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
+	         Cart newCart = new Cart();
+	         newCart.setUserId(userId);
+	         return cartRepository.save(newCart);
+	     });
+	
+	     // Check if item already exists in cart
+	     Optional<CartItem> existingItemOpt = cart.getItems().stream()
+	             .filter(item -> item.getProductId().equals(addItemRequest.getProductId()))
+	             .findFirst();
+	
+	     if (existingItemOpt.isPresent()) {
+	         // If item exists, just update the quantity
+	         CartItem existingItem = existingItemOpt.get();
+	         existingItem.setQuantity(existingItem.getQuantity() + addItemRequest.getQuantity());
+	     } else {
+	         // If item does not exist, create a new one
+	         CartItem newItem = new CartItem();
+	         newItem.setProductId(addItemRequest.getProductId());
+	         newItem.setQuantity(addItemRequest.getQuantity());
+	         newItem.setProductName(addItemRequest.getProductName());
+	         newItem.setPrice(addItemRequest.getPrice());
+	         newItem.setCart(cart);
+	         cart.getItems().add(newItem);
+	     }
+	
+	     Cart updatedCart = cartRepository.save(cart);
+	     return ResponseEntity.ok(updatedCart);
+	 }
+	
+	 // DELETE an item from a cart
+	 @DeleteMapping("/{userId}/items/{itemId}")
+	 @Transactional
+	 public ResponseEntity<Cart> removeItemFromCart(@PathVariable String userId, @PathVariable Long itemId) {
+	     Cart cart = cartRepository.findByUserId(userId)
+	             .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
+	
+	     cart.getItems().removeIf(item -> item.getId().equals(itemId));
+	
+	     Cart updatedCart = cartRepository.save(cart);
+	     return ResponseEntity.ok(updatedCart);
+	 }
+	 
+	    @PutMapping("/{userId}/items/{itemId}")
+	    @Transactional
+	    public ResponseEntity<Cart> updateItemQuantity(
+	            @PathVariable String userId,
+	            @PathVariable Long itemId,
+	            @RequestBody UpdateQuantityRequest updateRequest) {
+	        
+	        Cart cart = cartRepository.findByUserId(userId)
+	                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
+
+	        CartItem itemToUpdate = cart.getItems().stream()
+	                .filter(item -> item.getId().equals(itemId))
+	                .findFirst()
+	                .orElseThrow(() -> new RuntimeException("Item not found in cart"));
+
+	        if (updateRequest.getQuantity() <= 0) {
+	            // If quantity is 0 or less, remove the item
+	            cart.getItems().remove(itemToUpdate);
+	        } else {
+	            // Otherwise, update the quantity
+	            itemToUpdate.setQuantity(updateRequest.getQuantity());
+	        }
+
+	        Cart updatedCart = cartRepository.save(cart);
+	        return ResponseEntity.ok(updatedCart);
+	    }
+	    
+}

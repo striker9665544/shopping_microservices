@@ -1,0 +1,51 @@
+package com.laptop.demo.Controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.laptop.demo.Entity.Laptop;
+import com.laptop.demo.Repository.LaptopRepository;
+import com.laptop.demo.dto.ProductResponseDTO;
+
+@RestController
+@RequestMapping("/laptop") // Defines the base URL for all methods in this controller
+public class LaptopController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private LaptopRepository laptopRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Laptop> getAllLaptops(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return laptopRepository.findByBrand(brand);
+        }
+        return laptopRepository.findAll();
+    }
+    
+    @GetMapping("/search")
+    public List<Laptop> searchMobiles(@RequestParam(required = false) String q) { // Make the param optional
+        // If the query is null or empty, return all products from this category
+        if (q == null || q.trim().isEmpty()) {
+            return laptopRepository.findAll();
+        }
+        // Otherwise, perform the search
+        return laptopRepository.findByNameContainingIgnoreCase(q);
+    }
+    
+    private ProductResponseDTO convertToDto(Laptop Laptop) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(Laptop.getId());
+        dto.setName(Laptop.getName());
+        dto.setPrice(Laptop.getPrice());
+        dto.setBrand(Laptop.getBrand());
+        return dto;
+    }
+    
+}

@@ -1,0 +1,37 @@
+package com.mobile.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.mobile.demo.Entity.Mobile;
+import com.mobile.demo.Repository.MobileRepository;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/mobile") // Defines the base URL for all methods in this controller
+public class MobileController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private MobileRepository mobileRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Mobile> getAllMobile(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return mobileRepository.findByBrand(brand);
+        }
+        return mobileRepository.findAll();
+    }
+    
+    @GetMapping("/search")
+    public List<Mobile> searchMobiles(@RequestParam(required = false, defaultValue = "") String q) {
+        if (q.isEmpty()) {
+            return mobileRepository.findAll();
+        }
+        // Call the new, more reliable query method
+        return mobileRepository.searchByName(q);
+    }
+    
+}

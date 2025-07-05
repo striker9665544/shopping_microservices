@@ -1,0 +1,48 @@
+package com.shoes.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.shoes.demo.dto.ProductResponseDTO;
+import com.shoes.demo.Entity.Shoes;
+import com.shoes.demo.Repository.ShoesRepository;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/shoes") // Defines the base URL for all methods in this controller
+public class ShoesController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private ShoesRepository shoesRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Shoes> getAllShoes(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return shoesRepository.findByBrand(brand);
+        }
+        return shoesRepository.findAll();
+    }
+    
+    @GetMapping("/search")
+    public List<Shoes> searchMobiles(@RequestParam(required = false) String q) { // Make the param optional
+        // If the query is null or empty, return all products from this category
+        if (q == null || q.trim().isEmpty()) {
+            return shoesRepository.findAll();
+        }
+        // Otherwise, perform the search
+        return shoesRepository.findByNameContainingIgnoreCase(q);
+    }
+    
+    private ProductResponseDTO convertToDto(Mobile mobile) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(mobile.getId());
+        dto.setName(mobile.getName());
+        dto.setPrice(mobile.getPrice());
+        dto.setBrand(mobile.getBrand());
+        return dto;
+    }
+    
+}

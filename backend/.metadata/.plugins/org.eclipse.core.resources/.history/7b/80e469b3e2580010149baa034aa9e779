@@ -1,0 +1,5 @@
+package com.search.demo.dto;
+
+public class ProductDTO {
+
+}

@@ -1,0 +1,53 @@
+ecommerce-microservices-project/
+│
+├── 📜 README.md
+│
+├── 🐳 docker-compose.yml
+│
+├── 📁 backend/
+│   │
+│   ├── 📁 login-service/
+│   │   ├── src/
+│   │   ├── pom.xml
+│   │   └── Dockerfile
+│   │
+│   ├── 📁 mobile-service/
+│   │   ├── src/
+│   │   ├── pom.xml
+│   │   └── Dockerfile
+│   │
+│   ├── 📁 laptop-service/
+│   │   ├── src/
+│   │   ├── pom.xml
+│   │   └── Dockerfile
+│   │
+│   └── 📁 shoes-service/
+│       ├── src/
+│       ├── pom.xml
+│       └── Dockerfile
+│
+├── 📁 frontend/
+│   │
+│   └── 📁 frontend-app/
+│       ├── public/
+│       ├── src/
+│       ├── package.json
+│       └── Dockerfile
+│
+├── 📁 kubernetes/
+│   │
+│   ├── 📁 backend/
+│   │   ├── login-deployment.yaml
+│   │   ├── login-service.yaml
+│   │   ├── mobile-deployment.yaml
+│   │   ├── mobile-service.yaml
+│   │   └── ... (and so on for other services)
+│   │
+│   └── 📁 frontend/
+│       ├── frontend-deployment.yaml
+│       └── frontend-service.yaml
+│
+└── 📁 database/
+    │
+    ├── 📜 01-create-schemas.sql
+    └── 📜 02-create-tables-and-data.sql

@@ -1,0 +1,6 @@
+package com.laptop.demo.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.laptop.demo.Entity.Laptop;
+public interface LaptopRepository extends JpaRepository<Laptop, Long> {}

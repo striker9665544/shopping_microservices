@@ -1,0 +1,30 @@
+package com.mobile.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.mobile.demo.Entity.Mobile;
+import com.mobile.demo.Repository.MobileRepository;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/mobile")
+public class MobileController {
+	
+    @Autowired
+    private MobileRepository mobileRepository;
+
+ // In MobileController.java
+    @GetMapping // Endpoint is now /api/mobiles via the gateway
+    public List<Mobile> getAllMobiles(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            // New logic to filter by brand
+            return mobileRepository.findByBrand(brand); // You'll need to create this method
+        }
+        // If no brand is specified, return all mobiles
+        return mobileRepository.findAll();
+    }
+    
+}

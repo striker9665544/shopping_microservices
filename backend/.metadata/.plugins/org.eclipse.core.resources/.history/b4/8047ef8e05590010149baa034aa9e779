@@ -1,0 +1,59 @@
+package com.search.demo.controller;
+
+//src/main/java/com/search/demo/controller/SearchController.java
+
+import com.search.demo.dto.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+@RestController
+@RequestMapping("/search")
+public class SearchController {
+
+ private final WebClient.Builder webClientBuilder;
+
+ public SearchController(WebClient.Builder webClientBuilder) {
+     this.webClientBuilder = webClientBuilder;
+ }
+
+ @GetMapping
+ public Flux<ProductDTO> searchAllProducts(@RequestParam(value = "q", required = false) String query) {
+     // Handle the case where the query is null to avoid errors
+     final String searchQuery = (query == null) ? "" : query;
+     
+     WebClient webClient = webClientBuilder.build();
+
+     // Call mobile service using a URI builder for safety
+     Flux<ProductDTO> mobileResults = webClient.get()
+             .uri("http://localhost:8082/mobile/search",
+                  uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+             .retrieve()
+             .bodyToFlux(ProductDTO.class)
+             .doOnNext(p -> p.setCategory("Mobiles"))
+             .onErrorResume(e -> Flux.empty());
+
+     // Call laptop service
+     Flux<ProductDTO> laptopResults = webClient.get()
+             .uri("http://localhost:8083/laptop/search",
+                  uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+             .retrieve()
+             .bodyToFlux(ProductDTO.class)
+             .doOnNext(p -> p.setCategory("Laptops"))
+             .onErrorResume(e -> Flux.empty());
+
+     // Call shoes service
+     Flux<ProductDTO> shoeResults = webClient.get()
+             .uri("http://localhost:8084/shoes/search",
+                  uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+             .retrieve()
+             .bodyToFlux(ProductDTO.class)
+             .doOnNext(p -> p.setCategory("Shoes"))
+             .onErrorResume(e -> Flux.empty());
+
+     return Flux.merge(mobileResults, laptopResults, shoeResults);
+ }
+}

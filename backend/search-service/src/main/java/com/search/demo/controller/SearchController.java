@@ -1,0 +1,86 @@
+//src/main/java/com/search/controller/SearchController.java
+package com.search.demo.controller;
+
+import com.search.demo.dto.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+@RestController
+@RequestMapping("/search")
+@CrossOrigin(origins = "http://localhost:3000")
+public class SearchController {
+
+    // Using final for immutable fields is good practice
+    private final WebClient webClient;
+
+    // We can build the WebClient once in the constructor
+    public SearchController(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
+    }
+
+    @GetMapping
+    public Flux<ProductDTO> searchAllProducts(@RequestParam(value = "q", required = false, defaultValue = "") String query) {
+        System.out.println("--- SEARCH-SERVICE: Searching for '" + query + "' ---");
+
+        // Define each stream independently to ensure no state is shared
+        Flux<ProductDTO> mobileResults = getMobiles(query);
+        Flux<ProductDTO> laptopResults = getLaptops(query);
+        Flux<ProductDTO> shoeResults = getShoes(query);
+
+        // Merge the independent streams
+        return Flux.merge(mobileResults, laptopResults, shoeResults);
+    }
+
+    // Helper method for mobile search
+    private Flux<ProductDTO> getMobiles(String query) {
+        return webClient.get()
+                .uri("http://localhost:8082/mobile/search", uri -> uri.queryParam("q", query).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .map(product -> {
+                    product.setCategory("Mobiles"); // Set category correctly
+                    return product;
+                })
+                .onErrorResume(e -> {
+                    System.err.println("Error fetching mobiles: " + e.getMessage());
+                    return Flux.empty(); // Return empty stream on error
+                });
+    }
+
+    // Helper method for laptop search
+    private Flux<ProductDTO> getLaptops(String query) {
+        return webClient.get()
+                .uri("http://localhost:8083/laptop/search", uri -> uri.queryParam("q", query).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .map(product -> {
+                    product.setCategory("Laptops"); // Set category correctly
+                    return product;
+                })
+                .onErrorResume(e -> {
+                    System.err.println("Error fetching laptops: " + e.getMessage());
+                    return Flux.empty();
+                });
+    }
+
+    // Helper method for shoe search
+    private Flux<ProductDTO> getShoes(String query) {
+        return webClient.get()
+                .uri("http://localhost:8084/shoes/search", uri -> uri.queryParam("q", query).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .map(product -> {
+                    product.setCategory("Shoes"); // Set category correctly
+                    return product;
+                })
+                .onErrorResume(e -> {
+                    System.err.println("Error fetching shoes: " + e.getMessage());
+                    return Flux.empty();
+                });
+    }
+}

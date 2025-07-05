@@ -1,0 +1,26 @@
+spring.application.name=api-gateway
+# Run the gateway on a standard port like 8080
+server.port=8080
+
+# --- Routing Rules ---
+spring.cloud.gateway.routes:
+  # Route requests for /api/login/** to the login-service
+  - id: login_route
+    uri: http://localhost:8081 # URL of your login-service
+    predicates:
+      - Path=/api/login/**
+
+  # Route requests for /api/mobiles/** to the mobile-service
+  - id: mobile_route
+    uri: http://localhost:8082 # URL of your mobile-service
+    predicates:
+      - Path=/api/mobiles/**
+
+  # Route requests for /api/laptops/** to the laptop-service
+  - id: laptop_route
+    uri: http://localhost:8083
+    predicates:
+      - Path=/api/laptops/**
+
+  # Add routes for shoes-service and the new search-service here...
+  

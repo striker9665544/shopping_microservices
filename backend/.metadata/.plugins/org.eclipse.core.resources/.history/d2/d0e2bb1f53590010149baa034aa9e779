@@ -1,0 +1,5 @@
+package com.laptop.demo.dto;
+
+public class ProductResponseDTO {
+
+}

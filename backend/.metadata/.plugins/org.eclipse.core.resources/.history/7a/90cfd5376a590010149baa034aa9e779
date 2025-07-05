@@ -1,0 +1,75 @@
+package com.laptop.demo.Controller;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.laptop.demo.Entity.Laptop;
+import com.laptop.demo.Repository.LaptopRepository;
+import com.laptop.demo.dto.ProductResponseDTO;
+
+
+
+@RestController
+@RequestMapping("/laptop") // Defines the base URL for all methods in this controller
+@CrossOrigin(origins = "http://localhost:3000")
+public class LaptopController {
+    
+    // This field holds the connection to the repository
+    @Autowired
+    private LaptopRepository laptopRepository;
+
+    // This is your method, now correctly placed inside the class
+    @GetMapping
+    public List<Laptop> getAllLaptops(@RequestParam(required = false) String brand) {
+        if (brand != null && !brand.isEmpty()) {
+            return laptopRepository.findByBrand(brand);
+        }
+        return laptopRepository.findAll();
+    }
+    
+    // THIS IS THE NEW TEMPORARY DEBUGGING ENDPOINT
+    @GetMapping("/debug")
+    public String debugDatabaseContent() {
+        System.out.println("\n\n--- RUNNING DATABASE CONTENT DEBUG ---");
+        List<Laptop> allMobiles = laptopRepository.findAll();
+        System.out.println("Found " + allMobiles.size() + " total mobiles in the database.");
+        for (Laptop mobile : allMobiles) {
+            System.out.println("ID: " + mobile.getId() + 
+                               ", Name: '" + mobile.getName() + "'" +
+                               ", Brand: '" + mobile.getBrand() + "'");
+        }
+        System.out.println("--- FINISHED DATABASE CONTENT DEBUG ---\n\n");
+        return "Debug complete. Check the console log for the mobile-service.";
+    }
+
+    @GetMapping("/search")
+    public List<ProductResponseDTO> searchMobiles(@RequestParam(value = "q", defaultValue = "") String query) {
+        System.out.println("--- MOBILE-SERVICE: Received /search request with query: '" + query + "' ---");
+        
+        List<Laptop> mobiles;
+        if (query.isEmpty()) {
+            mobiles = laptopRepository.findAll();
+        } else {
+            mobiles = laptopRepository.searchByNameOrBrand(query);
+        }
+        
+        System.out.println("MOBILE-SERVICE: Found " + mobiles.size() + " products in database for query '" + query + "'.");
+        return mobiles.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+    
+    private ProductResponseDTO convertToDto(Laptop Laptop) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(Laptop.getId());
+        dto.setName(Laptop.getName());
+        dto.setPrice(Laptop.getPrice());
+        dto.setBrand(Laptop.getBrand());
+        return dto;
+    }
+    
+}

@@ -1,0 +1,26 @@
+package com.shoes.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.shoes.demo.Entity.Shoes;
+import com.shoes.demo.Repository.ShoesRepository;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/shoes")
+public class ShoesController {
+ @Autowired
+ private ShoesRepository laptopRepository;
+
+ // REPLACE your existing get method with this
+ @GetMapping
+ public List<Shoes> getAllLaptops(@RequestParam(required = false) String brand) {
+     if (brand != null && !brand.isEmpty()) {
+         return laptopRepository.findByBrand(brand);
+     }
+     return laptopRepository.findAll();
+ }
+}

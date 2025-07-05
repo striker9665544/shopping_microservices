@@ -1,0 +1,5 @@
+package com.mobile.demo.Entity;
+
+public class Mobile {
+
+}

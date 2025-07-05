@@ -1,0 +1,39 @@
+package com.example.demo.controller;
+
+//package com.example.loginservice;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.dto.request.LoginRequest;
+import com.example.demo.dto.response.LoginResponse;
+import com.example.demo.entity.User;
+import com.example.demo.jwtutility.JwtUtil;
+import com.example.demo.repository.UserRepository;
+
+import java.util.Optional;
+
+@RestController
+@CrossOrigin(origins = "*") // Allow all origins for simplicity
+@RequestMapping("/loginpage")
+public class AuthController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
+
+        if (userOptional.isPresent() && userOptional.get().getPassword().equals(loginRequest.getPassword())) {
+            String token = jwtUtil.generateToken(loginRequest.getUsername());
+            return ResponseEntity.ok(new LoginResponse(token));
+        }
+
+        return ResponseEntity.status(401).body("Invalid credentials");
+    }
+}

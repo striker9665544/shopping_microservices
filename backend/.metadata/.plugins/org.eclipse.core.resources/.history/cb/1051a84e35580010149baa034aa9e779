@@ -1,0 +1,24 @@
+package com.shoes.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.shoes.demo.Entity.Shoes;
+import com.shoes.demo.Repository.ShoesRepository;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/shoes")
+public class ShoesController {
+	
+    @Autowired
+    private ShoesRepository shoesrepository;
+
+    @GetMapping
+    public List<Shoes> getAllMobiles() {
+        return shoesrepository.findAll();
+    }
+    
+}

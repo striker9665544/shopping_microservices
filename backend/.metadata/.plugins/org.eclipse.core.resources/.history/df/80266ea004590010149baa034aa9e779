@@ -1,0 +1,5 @@
+package com.mobile.demo.dto;
+
+public class ProductResponseDTO {
+
+}

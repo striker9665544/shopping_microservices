@@ -1,0 +1,8 @@
+package com.cart.demo.repository;
+
+//src/main/java/com/cart/demo/repository/CartItemRepository.java
+
+import com.example.cartservice.entity.CartItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {}

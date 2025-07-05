@@ -1,0 +1,80 @@
+package com.search.demo.controller;
+
+//src/main/java/com/search/demo/controller/SearchController.java
+
+import com.search.demo.dto.*;
+
+import com.example.searchservice.dto.ProductDTO;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+@RestController
+@RequestMapping("/search")
+public class SearchController {
+
+    private final WebClient.Builder webClientBuilder;
+
+    public SearchController(WebClient.Builder webClientBuilder) {
+        this.webClientBuilder = webClientBuilder;
+    }
+
+    @GetMapping
+    public Flux<ProductDTO> searchAllProducts(@RequestParam(value = "q", required = false) String query) {
+        final String searchQuery = (query == null) ? "" : query;
+        System.out.println("--- SEARCH-SERVICE: Received search request for query: '" + searchQuery + "' ---");
+        
+        WebClient webClient = webClientBuilder.build();
+
+        // Call mobile service
+        Flux<ProductDTO> mobileResults = webClient.get()
+                .uri("http://localhost:8082/mobile/search", uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .doOnNext(p -> {
+                    p.setCategory("Mobiles");
+                    System.out.println("SEARCH-SERVICE: Received mobile product: " + p.getName());
+                })
+                .doOnComplete(() -> System.out.println("SEARCH-SERVICE: Mobile service call completed."))
+                .onErrorResume(e -> {
+                    System.err.println("SEARCH-SERVICE: ERROR calling mobile-service: " + e.getMessage());
+                    return Flux.empty();
+                });
+
+        // Call laptop service
+        Flux<ProductDTO> laptopResults = webClient.get()
+                .uri("http://localhost:8083/laptop/search", uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .doOnNext(p -> {
+                    p.setCategory("Laptops");
+                    System.out.println("SEARCH-SERVICE: Received laptop product: " + p.getName());
+                })
+                .doOnComplete(() -> System.out.println("SEARCH-SERVICE: Laptop service call completed."))
+                .onErrorResume(e -> {
+                    System.err.println("SEARCH-SERVICE: ERROR calling laptop-service: " + e.getMessage());
+                    return Flux.empty();
+                });
+
+        // Call shoes service
+        Flux<ProductDTO> shoeResults = webClient.get()
+                .uri("http://localhost:8084/shoes/search", uriBuilder -> uriBuilder.queryParam("q", searchQuery).build())
+                .retrieve()
+                .bodyToFlux(ProductDTO.class)
+                .doOnNext(p -> {
+                    p.setCategory("Shoes");
+                    System.out.println("SEARCH-SERVICE: Received shoe product: " + p.getName());
+                })
+                .doOnComplete(() -> System.out.println("SEARCH-SERVICE: Shoe service call completed."))
+                .onErrorResume(e -> {
+                    System.err.println("SEARCH-SERVICE: ERROR calling shoes-service: " + e.getMessage());
+                    return Flux.empty();
+                });
+
+        return Flux.merge(mobileResults, laptopResults, shoeResults)
+                   .doOnTerminate(() -> System.out.println("--- SEARCH-SERVICE: Merged flux terminated. ---"));
+    }
+}

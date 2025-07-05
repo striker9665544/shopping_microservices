@@ -1,0 +1,24 @@
+package com.mobile.demo.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.mobile.demo.Entity.Mobile;
+import com.mobile.demo.Repository.MobileRepository;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/mobile")
+public class MobileController {
+	
+    @Autowired
+    private MobileRepository mobileRepository;
+
+    @GetMapping
+    public List<Mobile> getAllMobiles() {
+        return mobileRepository.findAll();
+    }
+    
+}

@@ -1,0 +1,98 @@
+npx create-react-app frontend-app
+cd frontend-app
+npm install axios react-router-dom
+npm install react-scripts --save-dev
+npm install
+npm start
+
+Go to File -> New -> Other... -> Spring Boot -> Spring Starter Project.
+Project Details:
+Name: login-service
+Group: com.example
+Artifact: login-service
+Packaging: Jar
+Java Version: 17
+Dependencies: Click Next, and select the following dependencies:
+
+Spring Web: For creating REST APIs.
+
+Spring Data JPA: For database interaction.
+
+MySQL Driver: The JDBC driver for MySQL.
+
+Lombok: To reduce boilerplate code (getters, setters, etc.).
+
+For JWT: We will add this manually.
+
+Click Finish. The project will be created and dependencies downloaded.
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Phase A: Start the Database
+
+Ensure MySQL is Running: Open MySQL Workbench. You should be able to connect to your local MySQL server. If you can't connect, it means the server isn't running. You'll need to start it from your system's services.
+
+Verify Schemas and Tables: In MySQL Workbench, look at the "SCHEMAS" list on the left. Make sure you see user_db and product_db. Expand them and verify the tables (user, mobile, laptop, shoes) exist and have the sample data we inserted earlier.
+
+Phase B: Run All Backend Microservices
+
+We need to run each Java service. The easiest way is directly from Eclipse. Each service will run in its own process and have its own console output.
+
+Start login-service (Port 8081):
+In Eclipse, find the login-service project in the "Package Explorer".
+Right-click on the project.
+Go to Run As -> Spring Boot App.
+A "Console" window will open inside Eclipse. Wait until you see a line that says Tomcat started on port(s): 8081.
+
+Start mobile-service (Port 8082):
+Right-click on the mobile-service project.
+Go to Run As -> Spring Boot App.
+A new console will open (you can switch between them). Wait for the message Tomcat started on port(s): 8082.
+Verification (Optional but Recommended): Open your web browser and go to http://localhost:8082/mobile. You should see the JSON data for your sample mobile phones.
+
+Start laptop-service (Port 8083):
+Right-click on the laptop-service project.
+Go to Run As -> Spring Boot App.
+Wait for the message Tomcat started on port(s): 8083.
+Verification: Go to http://localhost:8083/laptop in your browser. You should see the laptop data.
+
+Start shoes-service (Port 8084):
+Right-click on the shoes-service project.
+Go to Run As -> Spring Boot App.
+Wait for the message Tomcat started on port(s): 8084.
+Verification: Go to http://localhost:8084/shoes in your browser. You should see the shoes data.
+At this point, all your backend APIs are running and ready.
+
+Phase C: Run the Frontend Application
+Open a Terminal: Open a new terminal (e.g., in Visual Studio Code via Terminal -> New Terminal).
+Navigate to the Frontend Directory:
+Generated bash
+cd C:\Users\OMKAR\Desktop\DevOps_Project\Flipkart_Microservices\frontend\frontend-app
+Use code with caution.
+Bash
+Run the Start Command:
+Generated bash
+npm start
+Use code with caution.
+Bash
+Your default web browser will automatically open to http://localhost:3000. You should see your application's homepage.
+
+
+Phase D: Perform the Testing
+Now you can test the entire flow from the user's perspective.
+
+Test Login:
+On your app's homepage, click the "Login" link.
+In the form, enter testuser for the username and password for the password.
+Click the "Login" button.
+You should see an alert('Login successful!').
+To verify the JWT token: Press F12 in your browser to open Developer Tools. Go to the "Application" tab. On the left, under "Storage", click "Local Storage", and then click http://localhost:3000. You should see a key named jwtToken with a long string value. This confirms the frontend successfully called the login-service backend.
+Test Product Pages:
+Go back to the homepage (http://localhost:3000).
+Click the "Mobiles" link.
+The page should now display "iPhone 15" and "Samsung Galaxy S24" with their prices. This confirms the frontend is successfully calling the mobile-service backend.
+Repeat for the "Laptops" and "Shoes" links to test the other services.
+You now have a fully operational local environment for your microservices project.

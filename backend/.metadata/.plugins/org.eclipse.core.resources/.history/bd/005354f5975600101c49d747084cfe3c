@@ -1,0 +1,5 @@
+package com.shoes.demo.Repository;
+
+public class ShoesRepository {
+
+}

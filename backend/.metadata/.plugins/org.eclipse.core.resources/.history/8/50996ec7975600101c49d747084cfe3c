@@ -1,0 +1,5 @@
+package com.shoes.demo.Entity;
+
+public class Shoes {
+
+}

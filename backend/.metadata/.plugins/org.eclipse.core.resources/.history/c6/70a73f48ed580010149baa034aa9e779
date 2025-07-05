@@ -1,0 +1,28 @@
+package com.cart.demo.entity;
+
+//src/main/java/com/cart/demo/entity/CartItem.java
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+public class CartItem {
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+ private Long id;
+
+ private Long productId;
+ private int quantity;
+
+ // We store the product's name and price at the time of adding to the cart
+ // This prevents price changes from affecting an already-added item.
+ private String productName;
+ private double price;
+
+ @ManyToOne(fetch = FetchType.LAZY)
+ @JoinColumn(name = "cart_id")
+ @JsonIgnore // Prevents infinite recursion when serializing to JSON
+ private Cart cart;
+}

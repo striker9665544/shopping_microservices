@@ -1,0 +1,8 @@
+package com.laptop.demo.Repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.laptop.demo.Entity.Laptop;
+public interface LaptopRepository extends JpaRepository<Laptop, Long> {   List<Laptop> findByBrand(String brand);  }

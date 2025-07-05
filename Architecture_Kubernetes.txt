@@ -1,0 +1,14 @@
+23:16:49	UPDATE mobile SET brand = 'Apple' WHERE name LIKE '%iPhone%'	Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.  To disable safe mode, toggle the option in Preferences -> SQL Editor and reconnect.	0.000 sec
+
+
+Next Steps (The "End Goal" Plan)
+After you have completed the modifications above, your project will be ready. The next steps will be to create the new infrastructure services one by one:
+Create the config-server Project: Set up a Git repository for your configurations.
+Create the service-registry (Eureka Server) Project: This will be a simple Spring Boot app with the @EnableEurekaServer annotation.
+Create the api-gateway Project: Configure its routing rules to point to the service names (e.g., mobile-service) instead of localhost:8082.
+Create the search-service Project: Implement the aggregator logic.
+Update Frontend API calls: Change all axios calls to point to the API Gateway's address.
+
+
+search bar
+add to cart

@@ -1,0 +1,4 @@
+spring.application.name=api-gateway
+# Run the gateway on a standard port like 8080
+server.port=8080
+  

@@ -1,0 +1,15 @@
+package com.search.demo.dto;
+
+//src/main/java/com/search/demo/dto/ProductDTO.java
+
+import java.math.BigDecimal;
+import lombok.Data;
+
+@Data
+public class ProductDTO {
+ private Long id;
+ private String name;
+ private BigDecimal price;
+ private String brand;
+ private String category; // e.g., "Mobile", "Laptop", "Shoes"
+}
