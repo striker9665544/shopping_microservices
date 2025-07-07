@@ -40,16 +40,24 @@ const MobilePage = () => {
             });
     };
 
+    const getMobileImage = (name) => {
+        if (name.toLowerCase().includes('iphone')) return '/images/iPhone.png';
+        if (name.toLowerCase().includes('samsung')) return '/images/Samsung.png';
+        if (name.toLowerCase().includes('moto')) return '/images/Moto.png';
+        return '/images/HomepageMobile.png'; // Default image
+    };
+
     if (loading) return <p>Loading mobiles...</p>;
 
     return (
         <div>
             <h2>Mobiles</h2>
-            <div className="product-list">
+            <div className="product-grid"> {/* Use the global grid style */}
                 {mobiles.map(mobile => (
-                    <div key={mobile.id} className="product-item" style={{ border: '1px solid #ccc', padding: '10px', margin: '10px' }}>
+                    <div key={mobile.id} className="product-card"> {/* Use the global card style */}
+                        <img src={getMobileImage(mobile.name)} alt={mobile.name} />
                         <h3>{mobile.name}</h3>
-                        <p>Price: ${mobile.price}</p>
+                        <p className="price">${mobile.price}</p>
                         <button onClick={() => handleAddToCart(mobile)}>Add to Cart</button>
                     </div>
                 ))}

@@ -1,10 +1,40 @@
-body {
+/* src/index.css */
+
+/*
+  The Ultimate CSS Reset for a full-screen React App
+*/
+
+/* 
+  1. Apply box-sizing to everything for predictable layouts.
+*/
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* 
+  2. Remove all default margin and padding from the root elements.
+     This is the most important part for fixing the white border.
+*/
+body, html, #root {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* 
+  3. Set a base font and other properties for the whole application.
+*/
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff; /* Default background for other pages */
 }
 
 code {

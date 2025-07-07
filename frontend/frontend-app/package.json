@@ -15,6 +15,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:clean": "npm run clean && react-scripts start --reset-cache",
+    "clean": "rm -rf node_modules/.cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

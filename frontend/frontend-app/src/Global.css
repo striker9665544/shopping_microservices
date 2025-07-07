@@ -1,0 +1,62 @@
+/* src/Global.css */
+
+/* --- General Page Styling --- */
+main {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* --- Reusable Product Grid --- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* --- Reusable Product Card --- */
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: 180px;
+    object-fit: contain; /* Use 'contain' to prevent stretching */
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.product-card .price {
+    color: #333;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.product-card button {
+    background-color: #FFD333; /* Yellow from template */
+    color: #3D464D; /* Dark text color from template */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.product-card button:hover {
+    background-color: #e6be2e;
+}

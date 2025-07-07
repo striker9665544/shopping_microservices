@@ -35,3 +35,42 @@
     transform: rotate(360deg);
   }
 }
+
+/* src/App.css */
+.App-header {
+  background-color: #FFFFFF; /* White background */
+  padding: 15px 40px;
+  color: #3D464D;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+}
+
+.App-header h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #3D464D;
+  margin: 0;
+}
+
+.App-header h1 span {
+  background-color: #FFD333; /* Yellow background */
+  color: #3D464D;
+  padding: 0 10px;
+  border: 2px solid #3D464D;
+}
+
+.App-header nav a {
+  color: #3D464D;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+}
+
+.App-header nav img {
+  width: 24px;
+  margin-right: 8px;
+}

@@ -36,3 +36,59 @@
 .selection-item button:hover {
     background-color: #0056b3;
 }
+
+/* src/components/SelectionPage.css */
+
+.selection-page h2 {
+    text-align: center;
+    margin: 40px 0 20px 0;
+    font-size: 2em;
+}
+
+.main-banner {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.main-banner img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.main-banner .banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.selection-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.selection-item {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: box-shadow 0.3s;
+}
+
+.selection-item:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.selection-item img {
+    max-width: 100%;
+    height: 150px;
+    object-fit: contain;
+}
